@@ -13,11 +13,8 @@ export const blogCreateSchema = z.object({
   author: z.string().optional(), // You can keep author optional, or make it required based on your needs
   image: z
     .string()
-    .url({ message: 'Please enter a valid image URL' })
-    .regex(
-      /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))$/i,
-      'Please enter a valid image URL with supported format (png, jpg, jpeg, gif, webp)'
-    ),
+   
+    ,
   tags: z
     .string()
     .optional()

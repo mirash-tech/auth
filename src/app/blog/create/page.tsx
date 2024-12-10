@@ -100,7 +100,7 @@ export default function BlogCreatePage() {
 
         <label className="block mb-2 font-semibold">Image URL:</label>
         <input
-          type="text"
+          type="file"
           name="image"
           value={formData.image}
           onChange={handleChange}

@@ -9,6 +9,7 @@ interface Blog {
   createdAt: string;
 }
 
+
 async function fetchBlogs(): Promise<Blog[]> {
   try {
     const response = await axios.get(`${process.env.DOMAIN}/api/blogs/index`);
