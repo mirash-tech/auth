@@ -13,12 +13,9 @@ export const blogCreateSchema = z.object({
   author: z.string().optional(), // You can keep author optional, or make it required based on your needs
   image: z
     .string()
-   
-    ,
-  tags: z
-    .string()
-    .optional()
-    .transform((val) => (val ? val.split(',').map(tag => tag.trim()) : [])), // If tags are provided, split into array
+    
+   ,
+  tags: z.array(z.string()).optional(), // If tags are provided, split into array
 });
 
 export type BlogCreateInput = z.infer<typeof blogCreateSchema>;

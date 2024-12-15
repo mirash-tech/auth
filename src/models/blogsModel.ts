@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const blogSchema = new mongoose.Schema({
+export const blogSchema = new mongoose.Schema({
     title: {
         type: String,
         required: [true, "Please enter a title"], // Ensures title is required
@@ -11,18 +11,11 @@ const blogSchema = new mongoose.Schema({
     image: {
         type: String,
         required: true,
-        validate: {
-          validator: function (value:any) {
-            return /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))$/i.test(value);
-          },
-          message: "Please enter a valid image URL",
-        },
+       
       },
     description: {
         type: String,
-        required: [true, "Please enter a description"], // Ensures description is required
-        minlength: [5, "Description must be at least 5 characters long"],
-        maxlength: [1000, "Description can't be longer than 1000 characters"]
+        required: false,
     },
     author: {
         type: String,

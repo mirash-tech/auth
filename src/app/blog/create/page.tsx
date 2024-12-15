@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast';
 
 export default function BlogCreatePage() {
   const router = useRouter();
+  const [blogImage,setBlogImage]=useState<string[]>([]);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -26,28 +27,43 @@ export default function BlogCreatePage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [name]: value }); 
   };
 
+const handleBlogImageChange = (e: React.ChangeEvent<HTMLInputElement>)=>{
+ 
+  const files = e.target.files;
+  if (files && files.length > 0) {
+    const file = files[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setBlogImage([reader.result as string]);
+     
+    };
+    reader.readAsDataURL(file);
+  
+}}
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.title || !formData.description || !formData.author || !formData.image) {
-      toast.error('Please fill in all required fields.');
+    if (!formData.title || !formData.description || !formData.author ) {
+
+      console.error('Please fill in all required fields.');
       return;
     }
 
     try {
       setLoading(true);
       const tagsArray = formData.tags.split(',').map(tag => tag.trim());
-      const response = await axios.post('/api/blogs/create', { ...formData, tags: tagsArray });
+      
+      const response = await axios.post('/api/blogs/create', { ...formData, tags: tagsArray,images: blogImage});
 
       toast.success('Blog created successfully!');
       setFormData({ title: '', description: '', author: '', image: '', tags: '' });
 
       // Redirect or handle navigation
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to create blog.');
+      console.error(error.response?.data?.message || 'Failed to create blog.');
     } finally {
       setLoading(false);
     }
@@ -99,15 +115,23 @@ export default function BlogCreatePage() {
         />
 
         <label className="block mb-2 font-semibold">Image URL:</label>
+        <div className="border flex flex-wrap gap-1 bg-white min-h-[300px] mt-6 mb-10 rounded-md shadow-sm">
+          {blogImage.map((image)=>(<div className='relative flex-1 basis-[300px] h-[200px]' key={image}>
+            <img src={image} alt="Blog Image" className="w-full h-full object-cover rounded-md" />
+            
+          </div>))} 
+          </div>
+
         <input
           type="file"
-          name="image"
+          name="blogImage"
           value={formData.image}
-          onChange={handleChange}
+          multiple
+          onChange={handleBlogImageChange}
           placeholder="Enter image URL"
           className="w-full mb-4 p-2 border border-gray-300 rounded"
           required
-        />
+          />
 
         <label className="block mb-2 font-semibold">Tags (comma-separated):</label>
         <input
@@ -118,7 +142,7 @@ export default function BlogCreatePage() {
           placeholder="Enter tags (e.g., tech, lifestyle)"
           className="w-full mb-4 p-2 border border-gray-300 rounded"
         />
-
+    
         <button
           type="submit"
           className="w-full p-3 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-300"
